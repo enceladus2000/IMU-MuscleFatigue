@@ -46,7 +46,9 @@ def main():
 	print("Finished serial read.")
 	ser.close()
 
+	# convert data to numpy and normalise
 	stream = np.array(stream)
+	stream = normalise_stream(np.ones((10, 6)))
 	# plot accx data for now
 	# TODO: plot other signals in same plot with labels
 	plt.plot(stream.T[0])
@@ -56,12 +58,16 @@ def main():
 	gotlabel = False
 	while gotlabel is False:
 		labelstr = input("Enter label for this datapoint: ")
+		if labelstr == "exit":
+			print("User exit...")
+			exit()
+
 		try:
 			label = label_dict[labelstr]
 			gotlabel = True
 		except:
 			print("Please enter label from the following only: ")
-			print([k for k in label_dict.keys])
+			print([k for k in label_dict.keys()])
 
 	# flatten all data values in a single row, with last element being the label
 	row = np.append(stream.flatten(), [label])
@@ -79,7 +85,9 @@ def normalise_stream(stream):
 	# stream is Nx6 np array
 	GYRO_NORM = 500	# max deg per sec sensed by imu
 	ACCEL_NORM = 80	# imu accel set to +/- 8G
-	# TODO: use advanced indexing instead of this shit
+	div = np.array([ACCEL_NORM]*3 + [GYRO_NORM]*3)
+	return stream / div
+
 
 if __name__ == "__main__":
 	main()
