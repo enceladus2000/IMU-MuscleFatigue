@@ -1,0 +1,4 @@
+Labels:
+0 - lying
+1 - standing
+2 - walking

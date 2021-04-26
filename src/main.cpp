@@ -53,7 +53,7 @@ void setup() {
   // status = IMU.calibrateAccel();
   // Serial.println("Accel cal status: " + String(status));
   // setting the accelerometer full scale range to +/-8G 
-  IMU.setAccelRange(MPU9250::ACCEL_RANGE_4G);
+  IMU.setAccelRange(MPU9250::ACCEL_RANGE_8G);
   // setting the gyroscope full scale range to +/-500 deg/s
   IMU.setGyroRange(MPU9250::GYRO_RANGE_500DPS);
   // setting DLPF bandwidth to 20 Hz
