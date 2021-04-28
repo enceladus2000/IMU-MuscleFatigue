@@ -48,16 +48,24 @@ def main():
 
 	# convert data to numpy and normalise
 	stream = np.array(stream)
-	stream = normalise_stream(np.ones((10, 6)))
-	# plot accx data for now
-	# TODO: plot other signals in same plot with labels
-	plt.plot(stream.T[0])
+	stream = normalise_stream(stream)
+	# plot data
+	plt.plot(stream.T[0], label='AccX')
+	plt.plot(stream.T[1], label='AccY')
+	plt.plot(stream.T[2], label='AccZ')
+	plt.plot(stream.T[3], label='GyroX')
+	plt.plot(stream.T[4], label='GyroY')
+	plt.plot(stream.T[5], label='GyroZ')
+
+	plt.xlabel("samples")
+	plt.ylabel("normalised values")
+	plt.legend()
 	plt.show()
 
 	# assign label to data
 	gotlabel = False
 	while gotlabel is False:
-		labelstr = input("Enter label for this datapoint: ")
+		labelstr = input("Enter label for this datapoint (type exit to abort): ")
 		if labelstr == "exit":
 			print("User exit...")
 			exit()
