@@ -1,34 +1,12 @@
-/*
-Advanced_I2C.ino
-Brian R Taylor
-brian.taylor@bolderflight.com
-
-Copyright (c) 2017 Bolder Flight Systems
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software 
-and associated documentation files (the "Software"), to deal in the Software without restriction, 
-including without limitation the rights to use, copy, modify, merge, publish, distribute, 
-sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is 
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all copies or 
-substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING 
-BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND 
-NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, 
-DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, 
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-*/
-
-#include "MPU9250.h"
+#include <MPU9250.h>
 #include <Arduino.h>
 
 #define rad2deg 59.29577951 
 
-#define ACCELBIAS_X 1.461004
-#define ACCELBIAS_Y 2.522252
-#define ACCELBIAS_Z (-4.073942-4.207616)/2
+#define calibrateIMU false   // set false to skip calibration step
+#define ACCELBIAS_X 2.38
+#define ACCELBIAS_Y 0.74
+#define ACCELBIAS_Z 4.29
 
 // an MPU9250 object with the MPU-9250 sensor on I2C bus 0 with address 0x68
 MPU9250 IMU(Wire,0x68);
@@ -50,8 +28,21 @@ void setup() {
   }
   status = IMU.calibrateGyro();
   Serial.println("Gyro cal status: " + String(status));
-  // status = IMU.calibrateAccel();
-  // Serial.println("Accel cal status: " + String(status));
+  if (calibrateIMU){
+    status = IMU.calibrateAccel2();
+    Serial.println("Accel cal status: " + String(status));
+  }
+  else {
+    // manually set accelbias and scales
+    IMU.setAccelCalX(ACCELBIAS_X, 1);
+    IMU.setAccelCalY(ACCELBIAS_Y, 1);
+    IMU.setAccelCalZ(ACCELBIAS_Z, 1);
+  }
+  Serial.println("Accel biases: ");
+  Serial.print(String(IMU.getAccelBiasX_mss()) + "  " 
+              + String(IMU.getAccelBiasY_mss()) + "  "
+              + String(IMU.getAccelBiasZ_mss()) + "  ");
+
   // setting the accelerometer full scale range to +/-8G 
   IMU.setAccelRange(MPU9250::ACCEL_RANGE_8G);
   // setting the gyroscope full scale range to +/-500 deg/s
@@ -61,12 +52,7 @@ void setup() {
   // setting SRD to 19 for a 50 Hz update rate
   IMU.setSrd(19);
 
-  IMU.setAccelCalX(ACCELBIAS_X, 1);
-  IMU.setAccelCalY(ACCELBIAS_Y, 1);
-  IMU.setAccelCalZ(ACCELBIAS_Z, 1);
-
-  Serial.println(IMU.getAccelBiasZ_mss());
-  
+  delay(1000);
 }
 
 void loop() {
@@ -82,20 +68,12 @@ void loop() {
   Serial.print(",");
   Serial.print(IMU.getAccelZ_mss(),6);
   Serial.print(",");
-  Serial.print(rad2deg * IMU.getGyroX_rads(),2);
+  Serial.print(rad2deg * IMU.getGyroX_rads(),4);
   Serial.print(",");
-  Serial.print(rad2deg * IMU.getGyroY_rads(),2);
+  Serial.print(rad2deg * IMU.getGyroY_rads(),4);
   Serial.print(",");
-  Serial.print(rad2deg * IMU.getGyroZ_rads(),2);
-  // Serial.print(",");
-  // Serial.print("Time taken: " + String(tt));
-  // Serial.print(IMU.getMagX_uT(),6);
-  // Serial.print("\t");
-  // Serial.print(IMU.getMagY_uT(),6);
-  // Serial.print("\t");
-  // Serial.print(IMU.getMagZ_uT(),6);
-  // Serial.print("\t");
-  // Serial.println(IMU.getTemperature_C(),6);
+  Serial.print(rad2deg * IMU.getGyroZ_rads(),4);
   Serial.println();
   delay(20);
 }
+
