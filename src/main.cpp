@@ -3,8 +3,8 @@
 
 #define rad2deg 59.29577951 
 
-#define calibrateIMU false   // set false to skip calibration step
-#define ACCELBIAS_X 2.38
+#define calibrateIMU true   // set false to skip calibration step
+#define ACCELBIAS_X 2.38     //TODO: write to EEPROM
 #define ACCELBIAS_Y 0.74
 #define ACCELBIAS_Z 4.29
 
