@@ -3,7 +3,7 @@
 
 #define rad2deg 59.29577951 
 
-#define calibrateIMU true   // set false to skip calibration step
+#define calibrateIMU false   // set false to skip calibration step
 #define ACCELBIAS_X 2.38     //TODO: write to EEPROM
 #define ACCELBIAS_Y 0.74
 #define ACCELBIAS_Z 4.29
@@ -57,9 +57,7 @@ void setup() {
 
 void loop() {
   // read the sensor
-  // long tt = millis();
   IMU.readSensor();
-  // tt = millis() - tt;
 
   // display the data
   Serial.print(IMU.getAccelX_mss(),6);
