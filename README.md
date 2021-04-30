@@ -13,3 +13,4 @@ ESP32 code was written in Arduino flavour, but using PlatformIO extension in VSC
 * src/main.cpp is the main driver code for ESP32
 * lib/MPU9250 contains the MPU9250 class for interfacing the IMU
 * python-util contains programs for collecting and analysing IMU data that the ESP32 sends via USB serial 
+* python-util/data contains raw (and augmented) data collected by gather.py
