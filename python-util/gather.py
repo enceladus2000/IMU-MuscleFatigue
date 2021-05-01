@@ -3,23 +3,27 @@ import numpy as np
 import matplotlib.pyplot as plt
 import csv
 import os
+import time
+from sys import stdin 
 # change CWD to directory of script
 os.chdir(os.path.dirname(__file__))
 print(os.getcwd())
 
-N = 10		# number of samples to collect
+# BEFORE RUNNING Check the following parameters.
+N = 100			# number of samples to collect
 label_dict = {
 	"lying": 0,
 	"standing": 1,
 	"walking": 2
 }
-DATA_PATH = "data/raw.csv"
+DATA_PATH = "data/raw.csv"	# file where raw data is dumped
+port_name = 'COM3'
 
 def main():
 	# open serial port
-	port_name = 'COM3'
 	try:
 		ser = serial.Serial(port_name, 115200, timeout=5)
+		print("Connected to {}".format(port_name))
 	except:
 		print("Could not connect to port, exiting...")
 		exit()
@@ -30,11 +34,16 @@ def main():
 		print("Data not available on serial port, exiting...")
 		exit()
 
-	print("Started reading COM port...")
+	print("Starting serial read in 3 seconds")
+	time.sleep(3)
+	# for i in range(3):
+	# 	print("{}...".format(3-i), end=" ", flush=True)
+	# 	time.sleep(1)
 
 	# collect N values of acc and gyro data and write to csv
 	stream = []
 	for i in range(N):
+		print(".", end="", flush=True)
 		line = ser.readline()
 		vector = [float(d) for d in line.split(b',')]
 		# print(vector)
@@ -65,7 +74,8 @@ def main():
 	# assign label to data
 	gotlabel = False
 	while gotlabel is False:
-		labelstr = input("Enter label for this datapoint (type exit to abort): ")
+		print("Enter label for this datapoint (type exit to abort): ", end=' ', flush=True)
+		labelstr = stdin.readline().strip()
 		if labelstr == "exit":
 			print("User exit...")
 			exit()
@@ -78,11 +88,11 @@ def main():
 			print([k for k in label_dict.keys()])
 
 	# flatten all data values in a single row, with last element being the label
-	row = np.append(stream.flatten(), [label])
+	row = np.append([label], stream.flatten())
 	# print(row)
 
-	# write to data.csv
-	with open(DATA_PATH, 'w') as file:
+	#  to data.csv
+	with open(DATA_PATH, 'a', newline='') as file:
 		writer = csv.writer(file)
 		writer.writerow(row)
 

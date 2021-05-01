@@ -4,9 +4,9 @@
 #define rad2deg 59.29577951 
 
 #define calibrateIMU false   // set false to skip calibration step
-#define ACCELBIAS_X 2.38     //TODO: write to EEPROM
-#define ACCELBIAS_Y 0.74
-#define ACCELBIAS_Z 4.29
+#define ACCELBIAS_X 4.16     //TODO: write to EEPROM
+#define ACCELBIAS_Y -2.41
+#define ACCELBIAS_Z 1.00
 
 // an MPU9250 object with the MPU-9250 sensor on I2C bus 0 with address 0x68
 MPU9250 IMU(Wire,0x68);
