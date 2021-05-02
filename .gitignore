@@ -4,4 +4,5 @@
 .vscode/launch.json
 .vscode/ipch
 python-util/test.py 
+__pycache__
 test.csv
